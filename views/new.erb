@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset='utf-8'>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <title>メモアプリ</title>
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 class="header__title">メモアプリ</h1>
+    </header>
+    <div class="main">
+      <div class="form">
+        <form method="post" action="/memos/new">
+          <div class="form-item">
+            <input type="text" name="title" class="form-item__text-input" value="タイトル">
+          </div>
+          <div class="form-item">
+            <textarea name="body" class="form-item__textarea"></textarea>
+          </div>
+          <div class="form-item">
+            <div class="form-item__actions">
+              <input type="submit" value="保存" class="form-item__action is-submit">
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="footer">
+      <footer class="footer__title">
+        <p>©️2019 NMP</p>
+      </footer>
+    </div>
+  </div>
+</body>
+
+</html>

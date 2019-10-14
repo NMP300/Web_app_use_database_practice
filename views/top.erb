@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset='utf-8'>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <title>メモアプリ</title>
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 class="header__title">メモアプリ</h1>
+    </header>
+    <div class="main">
+      <div class="main-item">
+        <h2 class="main__list"><%= @memos.map { |memo| "<a href=memos/#{memo[:id]}>#{memo[:title]}</a>" }.join("<br>") %></h2>
+      </div>
+      <div class="main-item">
+        <div class="main-item__actions">
+          <button class="add__btn" type="submit" onclick="location.href='/memos/new'">追加</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <footer class="footer__title">
+        <p>©️2019 NMP</p>
+      </footer>
+    </div>
+  </div>
+</body>
+
+</html>

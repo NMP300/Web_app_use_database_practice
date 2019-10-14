@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset='utf-8'>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <title>メモアプリ</title>
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 class="header__title">メモアプリ</h1>
+    </header>
+    <div class="main">
+      <h2 class="main__title"><%= @memo[:title] %></h2>
+      <p class="main__body"><%= @memo[:body] %></p>
+      <div class="main-item">
+        <div class="main-item__actions">
+          <button class="edit__btn" type="submit" onclick="location.href='/memos/<%= @memo[:id] %>/edit'">編集</button>
+          <form method="post" action="/memos/<%= @memo[:id] %>">
+            <button class="delete__btn" type="submit" name="_method" value="DELETE">削除</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <footer class="footer__title">
+        <p>©️2019 NMP</p>
+      </footer>
+    </div>
+  </div>
+</body>
+
+</html>
