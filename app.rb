@@ -4,30 +4,44 @@ require "sinatra"
 require "sinatra/reloader"
 require "securerandom"
 require "json"
+require "pg"
 
 class Memo
   def self.find(id: id)
-    JSON.parse(File.read("memos/#{id}.json"), symbolize_names: true)
+    memo = {}
+    result = DB.connect.exec("SELECT * FROM memo WHERE id ='#{id}'")
+    result.each do |res|
+      memo[:id]    = res["id"]
+      memo[:title] = res["title"]
+      memo[:body]  = res["body"]
+    end
+    memo
   end
 
   def self.create(title: title, body: body)
     contents = { id: SecureRandom.uuid, title: title, body: body }
-    File.open("memos/#{contents[:id]}.json", "w") { |file| file.puts JSON.pretty_generate(contents) }
+    DB.connect.exec("INSERT INTO memo VALUES ('#{contents[:id]}', '#{contents[:title]}', '#{contents[:body]}');")
   end
 
   def update(id: id, title: title, body: body)
     new_contents = { id: id, title: title, body: body }
-    File.open("memos/#{id}.json", "w") { |file| file.puts JSON.pretty_generate(new_contents) }
+    DB.connect.exec("UPDATE memo SET title = '#{new_contents[:title]}', body = '#{new_contents[:body]}' WHERE id = '#{new_contents[:id]}';")
   end
 
   def delete(id: id)
-    File.delete("memos/#{id}.json")
+    DB.connect.exec("DELETE FROM memo WHERE id='#{id}'")
+  end
+end
+
+class DB
+  def self.connect
+    PG.connect(host: "153.126.166.203", user: "memo_app", password: "memo", dbname: "memo")
   end
 end
 
 get "/memos" do
-  file_list = Dir.glob("memos/*")
-  @memos = file_list.map { |file| JSON.parse(File.read(file), symbolize_names: true) }
+  id_list = DB.connect.exec("SELECT * FROM memo").field_values("id")
+  @memos  = id_list.map { |id| Memo.find(id: id) }
   erb :top
 end
 
