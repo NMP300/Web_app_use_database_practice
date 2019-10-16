@@ -7,9 +7,11 @@ require "json"
 require "pg"
 
 class Memo
+  CONNECTION = PG.connect(host: "153.126.166.203", user: "memo_app", password: "memo", dbname: "memo")
+
   def self.find(id: id)
     memo = {}
-    result = DB.connect.exec("SELECT * FROM memo WHERE id ='#{id}'")
+    result = CONNECTION.exec("SELECT * FROM memo WHERE id ='#{id}'")
     result.each do |res|
       memo[:id]    = res["id"]
       memo[:title] = res["title"]
@@ -20,28 +22,25 @@ class Memo
 
   def self.create(title: title, body: body)
     contents = { id: SecureRandom.uuid, title: title, body: body }
-    DB.connect.exec("INSERT INTO memo VALUES ('#{contents[:id]}', '#{contents[:title]}', '#{contents[:body]}');")
+    CONNECTION.exec("INSERT INTO memo VALUES ('#{contents[:id]}', '#{contents[:title]}', '#{contents[:body]}');")
   end
 
   def update(id: id, title: title, body: body)
     new_contents = { id: id, title: title, body: body }
-    DB.connect.exec("UPDATE memo SET title = '#{new_contents[:title]}', body = '#{new_contents[:body]}' WHERE id = '#{new_contents[:id]}';")
+    CONNECTION.exec("UPDATE memo SET title = '#{new_contents[:title]}', body = '#{new_contents[:body]}' WHERE id = '#{new_contents[:id]}';")
   end
 
   def delete(id: id)
-    DB.connect.exec("DELETE FROM memo WHERE id='#{id}'")
+    CONNECTION.exec("DELETE FROM memo WHERE id='#{id}'")
   end
-end
 
-class DB
-  def self.connect
-    PG.connect(host: "153.126.166.203", user: "memo_app", password: "memo", dbname: "memo")
+  def self.id_list
+    CONNECTION.exec("SELECT * FROM memo").field_values("id")
   end
 end
 
 get "/memos" do
-  id_list = DB.connect.exec("SELECT * FROM memo").field_values("id")
-  @memos  = id_list.map { |id| Memo.find(id: id) }
+  @memos  = Memo.id_list.map { |id| Memo.find(id: id) }
   erb :top
 end
 
